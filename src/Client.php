@@ -34,7 +34,7 @@ class Client extends GuzzleClient
     {
         parent::__construct(
             new HttpClient(),
-            new Description(include realpath(__DIR__ . '/description.php')),
+            new Description($this->getDescription($config)),
             null,
             null,
             null,
@@ -67,5 +67,16 @@ class Client extends GuzzleClient
         }
 
         $this->setConfig('defaults', $defaults);
+    }
+    
+    private function getDescription(array $config): array
+    {
+        $description = include realpath(__DIR__ . '/description.php');
+        
+        if (isset($config['baseUrl'])  && !empty($config['baseUrl'])) {
+            $description['baseUrl'] = $config['baseUrl'];
+        }
+        
+        return $description;
     }
 }
